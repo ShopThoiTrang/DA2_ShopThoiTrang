@@ -1,0 +1,37 @@
+create database fashionshop;
+use fashionshop;
+CREATE TABLE `category` (
+  `categoryID` int(11) NOT NULL AUTO_INCREMENT,
+  `categoryName` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`categoryID`)
+);
+CREATE TABLE `product` (
+  `productID` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `productDescription` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
+  `productImage` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
+  `productName` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
+  `productPrice` int(11) NOT NULL,
+  `categoryID` int(11) NOT NULL,
+  FOREIGN KEY (`categoryID`) REFERENCES `category` (`categoryid`)
+);
+CREATE TABLE `user` (
+  `userID` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `userName` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
+  `userPass` varchar(32) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
+  `userEmail` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
+  `userRole` tinyint(1) NOT NULL
+);
+CREATE TABLE `invoice` (
+	invoiceid int(11) NOT NULL primary key auto_increment,
+  `userID` int(11) NOT NULL,
+  `price` int(11) DEFAULT NULL,
+  FOREIGN KEY (`userID`) REFERENCES `user` (`userid`)
+);
+CREATE TABLE invoicedetail(
+	invoiceid int(11) not null,
+    productid int(11) not null,
+    quantity int(11) not null,
+    primary key (invoiceid, productid),
+    foreign key (invoiceid) references invoice(invoiceid),
+    foreign key (productid) references product(productID)
+);
