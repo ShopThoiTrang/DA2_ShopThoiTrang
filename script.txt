@@ -1,4 +1,4 @@
-create database fashionshop;
+﻿create database fashionshop;
 use fashionshop;
 CREATE TABLE `category` (
   `categoryID` int(11) NOT NULL AUTO_INCREMENT,
@@ -35,3 +35,16 @@ CREATE TABLE invoicedetail(
     foreign key (invoiceid) references invoice(invoiceid),
     foreign key (productid) references product(productID)
 );
+INSERT INTO `category` (`categoryName`) VALUES
+('THỜI TRANG NAM'),
+('THỜI TRANG NỮ'),
+('THỜI TRANG TRẺ EM'),
+('THỜI TRANG NGƯỜI BẦU'),
+('THỜI TRANG NGƯỜI LỚN TUỔI');
+INSERT INTO `product` (`productDescription`, `productImage`, `productName`, `productPrice`, `categoryID`) VALUES
+(NULL, 'product7.jpg', 'Sản Phẩm 1', 29, 2),
+(NULL, 'product12.jpg', 'Sản Phẩm 2', 39, 1),
+(NULL, 'product8.jpg', 'Sản Phẩm 3', 19, 2),
+(NULL, 'product9.jpg', 'Sản Phẩm 4', 22, 2),
+(NULL, 'product10.jpg', 'Sản Phẩm 5', 29, 2),
+(NULL, 'product11.jpg', 'Sản Phẩm 6', 23, 2);
