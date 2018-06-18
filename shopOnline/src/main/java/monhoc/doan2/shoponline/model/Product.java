@@ -31,25 +31,26 @@ public class Product implements Serializable{
     @Column(name = "productID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int productID;
+
     
+    @Column(name = "productName")
+    private String productName;
+    
+    @Column(name = "productImage")
+    private String productImage;
+    
+    @Column(name = "productPrice")
+    private double productPrice;
+    
+    @Column(name = "productDescription")
+    private String productDescription;
+    
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+    private List<InvoiceDetail> listinvoicedetail;
+        
     @ManyToOne
     @JoinColumn(name = "categoryID")
     private Category category;
-    
-    @Column
-    private String productName;
-    
-    @Column
-    private String productImage;
-    
-    @Column
-    private double productPrice;
-    
-    @Column
-    private String productDescription;
-    
-    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<InvoiceDetail> listinvoicedetail;
     
     public Product() {
         super();
@@ -61,14 +62,6 @@ public class Product implements Serializable{
 
     public void setProductID(int productID) {
         this.productID = productID;
-    }
-
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
     }
 
     public String getProductName() {
@@ -110,7 +103,14 @@ public class Product implements Serializable{
     public void setListinvoicedetail(List<InvoiceDetail> listinvoicedetail) {
         this.listinvoicedetail = listinvoicedetail;
     }
- 
-    
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
     
 }

@@ -6,9 +6,9 @@
 package monhoc.doan2.shoponline.DAO;
 
 import java.util.ArrayList;
+import java.util.List;
 import monhoc.doan2.shoponline.model.Product;
 import java.util.Locale;
-import javax.persistence.Query;
 import javax.transaction.Transactional;
 import monhoc.doan2.shoponline.model.User;
 import org.hibernate.Session;
@@ -16,6 +16,7 @@ import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -38,15 +39,20 @@ public class ProductDAO {
         return list;
     }
 
-    public Product getProductByID(int productID) {
-        Product u = null;
+    public Product getProduct(int productID) {
+        Product u = new Product();
+        List<Product> lp = new ArrayList<Product>();
         try {
             Session session = sessionfactory.getCurrentSession();
-            u = (Product) session.get(Product.class, productID);
+            String querystring = "from Product where productID = :pid";
+            Query query = session.createQuery(querystring);
+            query.setParameter("pid", productID);
+            u = (Product)query.uniqueResult();
+            return u;
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
-        return u;
     }
 
     public ArrayList<Product> getProductRandom() {
@@ -59,7 +65,6 @@ public class ProductDAO {
 
     public boolean insertProduct(Product product) {
         try {
-
             Session session = sessionfactory.getCurrentSession();
             session.persist(product);
             return true;

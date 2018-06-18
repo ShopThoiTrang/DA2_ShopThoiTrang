@@ -36,7 +36,7 @@ public class ProductService {
 
     @Transactional
     public Product getProductByID(int productID) {
-        return productDAO.getProductByID(productID);
+        return productDAO.getProduct(productID);
     }
     @Transactional
     public ArrayList<Product> getProductByName(String productName) {

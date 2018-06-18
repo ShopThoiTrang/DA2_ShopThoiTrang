@@ -26,13 +26,14 @@ import javax.persistence.Table;
 public class Category implements Serializable{
 
     @Id
+    @Column(name = "categoryID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int categoryID;
     
     @Column(name = "categoryName")
     private String categoryName;
     
-    @OneToMany(mappedBy = "category", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
     private List<Product> listProduct;
 
     public Category() {

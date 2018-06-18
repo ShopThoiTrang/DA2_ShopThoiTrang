@@ -27,7 +27,7 @@
                                     <img src="<c:url value="/resources/images/shop/${item.productImage}" />" alt="" />
                                     <h2>$ ${item.productPrice}</h2>
                                     <p> ${item.productName}</p>
-                                     <input type="HIDDEN" name="itemID" value="${item.productID}"/>
+                                    <input type="HIDDEN" name="itemID" value="${item.productID}"/>
                                     <a href="orderpage" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
                                 </div>
                                 <div class="product-overlay">
@@ -35,9 +35,8 @@
                                         <<h2>$ ${item.productPrice} </h2>
                                         <p> ${item.productName}</p>
                                         <form:form action="orderpage">
-                                        <input type="HIDDEN" name="itemID" value="${item.productID}" />
-                                       
-                                     <input type="submit" class="btn btn-default" value="Add to cart" name="action2" />
+                                            <input type="HIDDEN" name="itemID" value="${item.productID}" />
+                                            <input type="submit" class="btn btn-default" value="Add to cart" name="action2" />
                                         </form:form>
                                     </div>
                                 </div>
@@ -45,7 +44,7 @@
                             <div class="choose">
                                 <ul class="nav nav-pills nav-justified">
                                     <li><a href="${pageContext.request.contextPath}/detail?ID=${item.productID}"><i class="fa fa-plus-square"></i>More Detail</a></li>
-                                   
+
                                 </ul>
                             </div>
                         </div>

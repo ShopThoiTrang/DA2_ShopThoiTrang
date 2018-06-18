@@ -5,30 +5,16 @@
  */
 package monhoc.doan2.shoponline.controller;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.naming.spi.DirStateFactory.Result;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.xml.ws.spi.http.HttpExchange;
 import monhoc.doan2.shoponline.model.Category;
 import monhoc.doan2.shoponline.model.Product;
 import monhoc.doan2.shoponline.model.User;
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -37,17 +23,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import monhoc.doan2.shoponline.service.CategoryService;
 import monhoc.doan2.shoponline.service.ProductService;
-import org.springframework.validation.*;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 import monhoc.doan2.shoponline.service.UserService;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.Part;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  *
@@ -86,9 +63,11 @@ public class HomepageController {
     public String Exit(HttpSession session, HttpServletRequest request, ModelMap mm) {
         session = request.getSession();
         session.setAttribute("users", "");
-        if(userService.logout())
+        if (userService.logout()) {
             return "redirect:/";
-        else return "redirect:/404";
+        } else {
+            return "redirect:/404";
+        }
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.GET)
@@ -98,14 +77,21 @@ public class HomepageController {
     }
 
     @RequestMapping(value = "/adminpage", method = RequestMethod.GET)
-    public String adminproduct(ModelMap model, @RequestParam(value = "tenSPSearch", required=false) String tenSPSearch){
-        if(tenSPSearch == null){
-            model.addAttribute("listPD", productService.getProductByName(""));
-        }else model.addAttribute("listPD", productService.getProductByName(tenSPSearch));
-        model.addAttribute("listCate", categoryService.getAllCategory());
-        return "pages/adminCatagory";
+    public String adminproduct(ModelMap model, @RequestParam(value = "tenSPSearch", required = false) String tenSPSearch) {
+        User currentuser = userService.getuserloggedin();
+        if (currentuser != null && currentuser.isUserRole()) {
+            if (tenSPSearch == null) {
+                model.addAttribute("listPD", productService.getProductByName(""));
+            } else {
+                model.addAttribute("listPD", productService.getProductByName(tenSPSearch));
+            }
+            model.addAttribute("listCate", categoryService.getAllCategory());
+            return "pages/adminCatagory";
+        } else {
+            return "redirect:/403";
+        }
     }
-    
+
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public String login(HttpServletRequest request, HttpServletResponse response,
             @ModelAttribute("userForm") User u, ModelMap mm, @RequestParam("action") String action) {
@@ -131,7 +117,7 @@ public class HomepageController {
             if (userService.checkMail(u.getUserEmail())) {
                 HttpSession session = request.getSession();
                 session.setAttribute("users", "Đã tồn tại user");
-                session.setAttribute("login","disable");
+                session.setAttribute("login", "disable");
                 return "redirect:/404";
             } // add user
             else {
@@ -152,7 +138,7 @@ public class HomepageController {
         }
         return "pages/error";
     }
-    
+
     @RequestMapping(value = "/detail")
     public String getProductByID(ModelMap mm, @RequestParam("ID") int ID) {
         //mm.put("Product", productService.getProductByID(ID));
@@ -165,6 +151,11 @@ public class HomepageController {
         return "pages/404";
     }
 
+    @RequestMapping(value = "/403")
+    public String loi403(ModelMap mm) {
+        return "pages/403";
+    }
+
     @RequestMapping(value = "/about")
     public String index7() {
         return "pages/about";
@@ -174,15 +165,13 @@ public class HomepageController {
     public String Search(
             @RequestParam(value = "search") String se,
             @RequestParam(value = "tenSPSearch") String sp,
-            ModelMap mm, HttpServletRequest request, HttpServletResponse response)
-    {
-        if (se.equals("search")) { 
-            return "redirect:/adminpage?tenSPSearch="+sp;
+            ModelMap mm, HttpServletRequest request, HttpServletResponse response) {
+        if (se.equals("search")) {
+            return "redirect:/adminpage?tenSPSearch=" + sp;
         } else {
             return "pages/404";
         }
     }
-    
 
     @RequestMapping(value = "/Deleteproduct", method = RequestMethod.POST)
     public String Delete(
@@ -204,30 +193,34 @@ public class HomepageController {
     @RequestMapping(value = "/orderpage")
     public String OrderPage(ModelMap mm, HttpServletRequest request,
             HttpServletResponse response) {
-        String itemID = request.getParameter("itemID");
-        Integer productId = Integer.parseInt(itemID);
-        HttpSession session = request.getSession();
-        if (session.getAttribute("cart") == null) {
-            session.setAttribute("cart", new HashMap<Product, Integer>());
-        }
-        Map<Product, Integer> cart = (Map<Product, Integer>) session.getAttribute("cart");
-        Product pd = productService.getProductByID(productId);
-        Set<Product> key = cart.keySet();
-        boolean ok = false;
-        for (Product k : key) {
-            if (k.getProductID() == pd.getProductID()) {
-                int qty = cart.get(k);
-                qty++;
-                cart.put(k, qty);
-                ok = true;
-                break;
+        User currentuser = userService.getuserloggedin();
+        if (currentuser != null) {
+            String itemID = request.getParameter("itemID");
+            int productId = Integer.parseInt(itemID);
+            HttpSession session = request.getSession();
+            if (session.getAttribute("cart") == null) {
+                session.setAttribute("cart", new HashMap<Product, Integer>());
             }
+            Map<Product, Integer> cart = (Map<Product, Integer>) session.getAttribute("cart");
+            Product pd = productService.getProductByID(productId);
+            Set<Product> key = cart.keySet();
+            boolean ok = false;
+            for (Product k : key) {
+                if (k.getProductID() == pd.getProductID()) {
+                    int qty = cart.get(k);
+                    qty++;
+                    cart.put(k, qty);
+                    ok = true;
+                    break;
+                }
+            }
+            if (ok == false) {
+                cart.put(pd, 1);
+            }
+            request.getSession().setAttribute("cart", cart);
+            return "pages/cart";
         }
-        if (ok == false) {
-            cart.put(pd, 1);
-        }
-        request.getSession().setAttribute("cart", cart);
-        return "pages/cart";
+        else return "redirect:/403";
     }
 
     @RequestMapping(value = "/cartoder")

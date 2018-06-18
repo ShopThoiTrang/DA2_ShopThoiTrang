@@ -6,11 +6,11 @@
 package monhoc.doan2.shoponline.DAO;
 
 import java.util.List;
-import javax.persistence.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import monhoc.doan2.shoponline.model.User;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -23,8 +23,8 @@ public class UserDAO {
 
     @Autowired
     SessionFactory sessionfactory;
-
-    User userloggedin = null;
+    
+    private User userloggedin = null;
     public void insertUser(User user) {
         try {
             Session session = sessionfactory.getCurrentSession();
@@ -38,8 +38,10 @@ public class UserDAO {
         User u = null;
         try {
             Session session = sessionfactory.getCurrentSession();
-            u = (User) session.createQuery("From User where"
-                    + "userID'" + userID + "'").uniqueResult();
+            String querystring = "from User where userID = :userid";
+            Query query = session.createQuery(querystring);
+            query.setParameter("userid", userID);
+            u = (User) query.uniqueResult();
         } catch (Exception e) {
             e.printStackTrace();
         }
