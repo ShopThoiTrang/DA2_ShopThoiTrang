@@ -128,10 +128,6 @@
 
                             <div class="modal-body">
                                 <div class="form-group">
-                                    <input name="txtMaSPThem" class="form-control"
-                                           placeholder="Ma sản phẩm ..." type="text" >
-                                </div>
-                                <div class="form-group">
                                     <input name="txtTenSPThem" class="form-control"
                                            placeholder="Tên sản phẩm ..." type="text" >
                                 </div>

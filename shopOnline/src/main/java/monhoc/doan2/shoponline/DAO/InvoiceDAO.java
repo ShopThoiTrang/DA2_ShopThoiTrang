@@ -34,18 +34,21 @@ public class InvoiceDAO {
 
     public boolean addinvoice(Map<Product, Integer> cart) {
         try {
+            int price = 0;
             Session session = sessionfactory.getCurrentSession();
             Invoice invoice = new Invoice();
             invoice.setUser(userservice.getuserloggedin());
-            invoice.setPrice(10000);
+            
             session.persist(invoice);
             for (Product k : cart.keySet()) {
                 InvoiceDetail newdetail = new InvoiceDetail();
+                price += k.getProductPrice()*cart.get(k);
                 newdetail.setInvoice(invoice);
                 newdetail.setProduct(k);
                 newdetail.setQuantity(cart.get(k));
                 session.persist(newdetail);
             }
+            invoice.setPrice(price);
             return true;
         } catch (Exception ex) {
             ex.printStackTrace();

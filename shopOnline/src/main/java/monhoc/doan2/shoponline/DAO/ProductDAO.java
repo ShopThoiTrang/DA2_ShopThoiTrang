@@ -33,7 +33,7 @@ public class ProductDAO {
 
     public ArrayList<Product> getAllProductByCategory(long categoryID) {
         Session session = sessionfactory.getCurrentSession();
-        Query query = session.createQuery("from product where categoryID = :categoryID");
+        Query query = session.createQuery("from Product where categoryID = :categoryID");
         query.setParameter("categoryID", categoryID);
         ArrayList<Product> list = (ArrayList<Product>) query.getResultList();
         return list;

@@ -55,7 +55,7 @@ public class editcontroller {
             newproduct.setCategory(categoryservice.getCategoryrById(Integer.parseInt(loaisanpham)));
             newproduct.setProductDescription(mota);
             newproduct.setProductName(tensanpham);
-            newproduct.setProductPrice(Double.parseDouble(dongia));
+            newproduct.setProductPrice(Integer.parseInt(dongia));
             if (productservice.insertProduct(newproduct)) {
                 System.out.println("success");
                 if (!fileupload.isEmpty()) {
@@ -93,7 +93,7 @@ public class editcontroller {
             modifyproduct.setCategory(categoryservice.getCategoryrById(Integer.parseInt(loaisanpham)));
             modifyproduct.setProductDescription(mota);
             modifyproduct.setProductName(tensanpham);
-            modifyproduct.setProductPrice(Double.parseDouble(dongia));
+            modifyproduct.setProductPrice(Integer.parseInt(dongia));
             if (productservice.ModifyProduct(modifyproduct)) {
                 System.out.println("success");
                 if (!fileupload.isEmpty()) {

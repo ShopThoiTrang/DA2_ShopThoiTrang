@@ -7,7 +7,6 @@ package monhoc.doan2.shoponline.model;
 
 import java.io.Serializable;
 import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -40,7 +39,7 @@ public class Product implements Serializable{
     private String productImage;
     
     @Column(name = "productPrice")
-    private double productPrice;
+    private int productPrice;
     
     @Column(name = "productDescription")
     private String productDescription;
@@ -80,11 +79,11 @@ public class Product implements Serializable{
         this.productImage = productImage;
     }
 
-    public double getProductPrice() {
+    public int getProductPrice() {
         return productPrice;
     }
 
-    public void setProductPrice(double productPrice) {
+    public void setProductPrice(int productPrice) {
         this.productPrice = productPrice;
     }
 
